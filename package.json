@@ -1,0 +1,27 @@
+{
+  "name": "stock-ticker-feeder",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "mocha": {
+    "require": "ts-node/register",
+    "reporter": "spec",
+    "recursive": true,
+    "checkLeaks": true,
+    "exit": true,
+    "spec": "test/**/*.spec.ts"
+  },
+  "scripts": {
+    "lint": "tslint -p . --fix",
+    "start": "node index.js",
+    "test": "cross-env NODE_ENV=testing mocha"
+  },
+  "author": {
+    "name": "Dariusz Wietecha"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.5.7"
+  },
+  "devDependencies": {}
+}
