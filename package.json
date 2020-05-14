@@ -20,8 +20,15 @@
     "name": "Dariusz Wietecha"
   },
   "dependencies": {
+    "@hapi/wreck": "^17.0.0",
     "dotenv": "^8.2.0",
-    "mongodb": "^3.5.7"
+    "mongodb": "^3.5.7",
+    "redis-connection": "^5.4.0",
+    "throat": "^5.0.0",
+    "ws": "^7.3.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.2"
+  }
 }
