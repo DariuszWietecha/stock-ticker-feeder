@@ -5,7 +5,9 @@
     ],
     "jsRules": {
         "semicolon": [true, "always"],
-        "max-line-length": [true, 110]
+        "max-line-length": [true, 110],
+        "quotemark": [true, "double"],
+        "no-console": false
     },
     "rules": {},
     "rulesDirectory": []
