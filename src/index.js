@@ -1,11 +1,12 @@
-'use strict';
+"use strict";
 
+const cliMethods = require("./cliMethods");
 const lib = require("./lib");
 const WebSocket = require("ws");
-
+// TODO: alphabet order of requires
 try {
 	(async () => {
-		lib.clearConsole();
+		cliMethods.clearConsole();
 
 		await lib.flushdbAsync();
 		console.log("DB flushed");

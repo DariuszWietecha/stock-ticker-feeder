@@ -1,4 +1,4 @@
-const readline = require("readline");
+const cliMethods = require("./cliMethods");
 const redisClient = require("redis-connection")();
 const throat = require("throat");
 const { promisify } = require("util");
@@ -7,28 +7,6 @@ const Wreck = require("@hapi/wreck");
 const flushdbAsync = promisify(redisClient.flushdb).bind(redisClient);
 const rpushAsync = promisify(redisClient.rpush).bind(redisClient);
 const hmsetAsync = promisify(redisClient.hmset).bind(redisClient);
-
-/**
- * @param {number} counter
- * @returns {void}
- */
-const displayProgresIndicator = (counter) => {
-  const toDisplay = counter % 2 === 0 ? "|" : "-";
-  readline.cursorTo(process.stdout, 0, 7);
-  readline.clearLine(process.stdout, 0);
-
-  console.log(toDisplay);
-};
-
-/**
- * @returns {void}
- */
-const clearConsole = () => {
-  const blank = "\n".repeat(process.stdout.rows);
-  console.log(blank);
-  readline.cursorTo(process.stdout, 0, 0);
-  readline.clearScreenDown(process.stdout);
-};
 
 /**
  * @returns {Promise<object[]>}
@@ -52,7 +30,7 @@ const getSymbolsList = () => {
 
     if (process.env.NARROW_SYMBOL_LIST === "true") {
       console.log("Symbols will be narrowed");
-      resolve(symbols.payload.slice(process.env.INDEX_FIRST_SYMBOL, process.env.INDEX_FIRST_SYMBOL));
+      resolve(symbols.payload.slice(process.env.INDEX_FIRST_SYMBOL, process.env.INDEX_LAST_SYMBOL));
       return;
     }
 
@@ -69,16 +47,26 @@ const savePreviousPrices = (requiredSymbols) => {
   return Promise.all(
     requiredSymbols.map(throat((parseInt(process.env.NUMBER_OF_REQUESTS_AT_A_TIME, 10)), async (symbol) => {
       const quote = await Wreck.get(`https://finnhub.io/api/v1/quote?symbol=${symbol.symbol}&token=${process.env.FINNHUB_PASS}`, { json: true })
-        .catch((err) => console.error(err));
+        .catch((error) => console.error(error));
+      let symbolData = [
+        "p", quote.payload.c,
+        "s", symbol.symbol
+      ];
 
-      await hmsetAsync(
-        symbol.symbol,
-        [
-          "pc", (typeof quote.payload.pc !== "undefined" ? quote.payload.pc : 0),
-          "p", quote.payload.c,
-          "s", symbol.symbol
-        ]);
+      if (typeof quote.payload.pc !== "undefined") {
+        symbolData = [...symbolData, "pc", quote.payload.pc];
+      }
+      await hmsetAsync(symbol.symbol, symbolData);
     })));
+};
+
+/**
+ * @param {object[]} requiredSymbols
+ * @returns {Promise<any[]>}
+ */
+const saveSymbols = (requiredSymbols) => {
+  return Promise.all(
+    requiredSymbols.map(async (symbol) => rpushAsync("symbols", JSON.stringify(symbol))));
 };
 
 /**
@@ -89,20 +77,11 @@ const savePreviousPrices = (requiredSymbols) => {
 const subscribeSymbol = (socket, symbol) => {
   return new Promise((resolve, reject) => {
     socket.send(JSON.stringify({ "type": "subscribe", "symbol": symbol }), (err, reply) => {
-      if (err) { reject(); }
+      if (err) { reject(err); }
 
       resolve();
     });
   });
-};
-
-/**
- * @param {object[]} requiredSymbols
- * @returns {Promise<any[]>}
- */
-const saveSymbols = (requiredSymbols) => {
-  return Promise.all(
-    requiredSymbols.map(async (symbol) => rpushAsync("symbols", JSON.stringify(symbol))));
 };
 
 /**
@@ -123,14 +102,13 @@ const subscribeSymbols = (socket, requiredSymbols) => {
 const updateSymbol = (event, counter) => {
   const parsedData = JSON.parse(event.data);
   if (parsedData.type === "trade") {
-    displayProgresIndicator(counter);
-    
+    cliMethods.displayProgresIndicator(counter);
+
     const stockData = parsedData.data[0];
     hmsetAsync(stockData.s, ["p", stockData.p, "s", stockData.s, "t", stockData.t, "v", stockData.v]);
   }
 };
 
-exports.clearConsole = clearConsole;
 exports.flushdbAsync = flushdbAsync;
 exports.getSymbolsList = getSymbolsList;
 exports.saveSymbols = saveSymbols;
