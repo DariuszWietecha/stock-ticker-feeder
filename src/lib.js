@@ -13,18 +13,18 @@ const flushdbAsync = (redisClient) => promisify(redisClient.flushdb).bind(redisC
  * @param {object} redisClient
  * @returns {Promise<void>}
  */
-const rpushAsync = (redisClient, key, data) => {
-  const rpushP = promisify(redisClient.rpush).bind(redisClient);
-  return rpushP(key, data);
+const hmsetAsync = (redisClient, key, data) => {
+  const hmsetP = promisify(redisClient.hmset).bind(redisClient);
+  return hmsetP(key, data);
 };
 
 /**
  * @param {object} redisClient
  * @returns {Promise<void>}
  */
-const hmsetAsync = (redisClient, key, data) => {
-  const hmsetP = promisify(redisClient.hmset).bind(redisClient);
-  return hmsetP(key, data);
+const rpushAsync = (redisClient, key, data) => {
+  const rpushP = promisify(redisClient.rpush).bind(redisClient);
+  return rpushP(key, data);
 };
 
 /**
@@ -35,11 +35,12 @@ const hmsetAsync = (redisClient, key, data) => {
  * @param {string} indexLastSymbol
  * @returns {Promise<object[]>}
  */
-const getSymbolsList = async (useSymbolsFromConfig, requireSymbolsConfig, narrowSymbolList, indexFirstSymbol, indexLastSymbol) => {
+const getSymbolsList = async (
+  useSymbolsFromConfig, requireSymbolsConfig, narrowSymbolList, indexFirstSymbol, indexLastSymbol) => {
   const symbols =
     await Wreck.get(
       `https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${process.env.FINNHUB_PASS}`,
-      { json: true })
+      { json: true });
 
   if (useSymbolsFromConfig === "true") {
     console.log("Symbols from config will be used");
@@ -68,7 +69,7 @@ const getSymbolsList = async (useSymbolsFromConfig, requireSymbolsConfig, narrow
 const savePreviousPrices = (redisClient, requiredSymbols) => {
   return Promise.all(
     requiredSymbols.map(throat((parseInt(process.env.NUMBER_OF_REQUESTS_AT_A_TIME, 10)), async (symbol) => {
-      const quote = await Wreck.get(`https://finnhub.io/api/v1/quote?symbol=${symbol.symbol}&token=${process.env.FINNHUB_PASS}`, { json: true })
+      const quote = await Wreck.get(`https://finnhub.io/api/v1/quote?symbol=${symbol.symbol}&token=${process.env.FINNHUB_PASS}`, { json: true });
 
       let symbolData = [
         "p", quote.payload.c,
@@ -120,16 +121,14 @@ const subscribeSymbols = (socket, requiredSymbols) => {
 /**
  * @param {object} redisClient
  * @param {object} event
- * @param {number} counter
  * @returns {Promise<void>}
  */
-const updateSymbol = async (redisClient, event, counter) => {
+const updateSymbol = async (redisClient, event) => {
   const parsedData = JSON.parse(event.data);
   if (parsedData.type === "trade") {
-    cliMethods.displayProgresIndicator(counter);
-
     const stockData = parsedData.data[0];
-    await hmsetAsync(redisClient, stockData.s, ["p", stockData.p, "s", stockData.s, "t", stockData.t, "v", stockData.v]);
+    await hmsetAsync(
+      redisClient, stockData.s, ["p", stockData.p, "s", stockData.s, "t", stockData.t, "v", stockData.v]);
   }
 };
 

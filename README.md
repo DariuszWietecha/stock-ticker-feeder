@@ -56,7 +56,6 @@ Previous day's closing prices for requiredSymbols saved in DB
 Subscribed for events related to requiredSymbols
 Trades for requiredSymbols updating DB data
 ```
-Constant update of trade data for required stocks will be indicated by constantly changing "spinner" (from "|" to  "-" and back again)
 
 ### Runing in the docker container
 1.  Copy `example.env` as `.env` and update it with real passwords, redis instance host and other values according to required behavior of the service. `.env` attributes meaning was described in separated point.
@@ -85,7 +84,6 @@ Previous day's closing prices for requiredSymbols saved in DB
 Subscribed for events related to requiredSymbols
 Trades for requiredSymbols updating DB data
 ```
-Constant update of trade data for required stocks will be indicated by constantly changing "spinner" (from "|" to  "-" and back again)
 
 ## Unit tests
 [Coverage](https://github.com/DariuszWietecha/stock-ticker-feeder/blob/master/coverage.html): 87.91%

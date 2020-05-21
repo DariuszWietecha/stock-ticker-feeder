@@ -1,7 +1,7 @@
 "use strict";
 
 const cliMethods = require("./cliMethods");
-const http = require("http")
+const http = require("http");
 const lib = require("./lib");
 const redisClient = require("redis-connection")();
 const WebSocket = require("ws");
@@ -43,10 +43,8 @@ try {
 			console.log("Subscribed for events related to requiredSymbols \nTrades for requiredSymbols updating DB data");
 		});
 
-		let counter = 0;
 		socket.addEventListener("message", async (event) => {
-			lib.updateSymbol(redisClient, event, counter);
-			counter++;
+			lib.updateSymbol(redisClient, event);
 		});
 	})();
 }
