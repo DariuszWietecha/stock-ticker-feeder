@@ -67,17 +67,13 @@ Trades for requiredSymbols updating DB data
 
 `docker build -t stock-ticker-feeder .`
 
-or load [windows build](https://github.com/DariuszWietecha/stock-ticker-feeder/blob/master/stock-ticker-feeder.tar) by:
-
-`docker load -i stock-ticker-feeder.tar`.
-
 4. Run image:
 
 `docker run --env-file .env stock-ticker-feeder` (windows)
 
 `docker run --env-file ./env stock-ticker-feeder` (linux)
 
-4. 4. In command line will be displayed logs inform of finished operations like below:
+5. In command line will be displayed logs inform of finished operations like below:
 ```
 DB flushed
 Symbols from config will be used
