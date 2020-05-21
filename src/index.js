@@ -1,6 +1,5 @@
 "use strict";
 
-const cliMethods = require("./cliMethods");
 const http = require("http");
 const lib = require("./lib");
 const redisClient = require("redis-connection")();

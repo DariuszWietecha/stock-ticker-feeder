@@ -1,7 +1,9 @@
 # Stock-ticker-feeder
 
+
 ## Introduction
 Node.js microservice to update Redis database used by [stock-ticker API](https://github.com/DariuszWietecha/stock-ticker)(simple REST API provides stock ticker data for required securities). The API was deployed on [https://stock-ticker-100.herokuapp.com/](https://stock-ticker-100.herokuapp.com/)
+
 
 ## Implementation details
 API and feeder were implemented as separate services to increase the reliability of the first.
@@ -34,8 +36,9 @@ During the implementation was used node v12.0.0.
 
 `NUMBER_OF_REQUESTS_AT_A_TIME` - Number of requests send to Finnhub API during the update of the stock previous price.
 
+
 ## Running the app
-### Running as NodeJS service
+### Running localy
 1. Install dependencies using 
 
 `npm install`.
@@ -85,13 +88,15 @@ Subscribed for events related to requiredSymbols
 Trades for requiredSymbols updating DB data
 ```
 
+
 ## Unit tests
-[Coverage](https://github.com/DariuszWietecha/stock-ticker-feeder/blob/master/coverage.html): 87.91%
+[Coverage](https://github.com/DariuszWietecha/stock-ticker-feeder/blob/master/coverage.html): 92.11%
 
 #### Running:
 1. Install dependencies and build using `npm install`.
 2. Run unit tests by `npm test`.
 3. To check test coverage run `npm run test-cov` or `test-cov-html`(It creates a report in [coverage.html](https://github.com/DariuszWietecha/stock-ticker-feeder/blob/master/coverage.html)).
+
 
 ## Notes
 * .vscode directory was committed to the repository to let to debug the workflow execution and unit tests execution in VSCode.

@@ -1,4 +1,3 @@
-const cliMethods = require("./cliMethods");
 const throat = require("throat");
 const { promisify } = require("util");
 const Wreck = require("@hapi/wreck");
