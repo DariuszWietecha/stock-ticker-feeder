@@ -1,10 +1,19 @@
 "use strict";
 
 const cliMethods = require("./cliMethods");
+const http = require("http")
 const lib = require("./lib");
 const redisClient = require("redis-connection")();
 const WebSocket = require("ws");
-// TODO: alphabet order of requires
+
+const hostname = process.env.HOST || "0.0.0.0"; 
+const port = process.env.PORT || 8080;
+const server = http.createServer();
+server.listen(port, hostname, () => {
+  console.log(
+		`Service listening at http://${hostname}:${port}/ to fulfill Heroku requirements for web processes.`);
+});
+
 try {
 	(async () => {
 		cliMethods.clearConsole();

@@ -8,7 +8,6 @@ const sinon = require("sinon");
 const Rewire = require("rewire");
 
 const libModule = Rewire("../src/lib.js");
-//  TODO: check if all assignment of process attribute is needed
 describe("lib", () => {
   const redisClientMock = {};
   const requiredSymbols = [

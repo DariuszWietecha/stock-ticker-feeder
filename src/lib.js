@@ -1,5 +1,4 @@
 const cliMethods = require("./cliMethods");
-//const redisClient = require("redis-connection")();
 const throat = require("throat");
 const { promisify } = require("util");
 const Wreck = require("@hapi/wreck");

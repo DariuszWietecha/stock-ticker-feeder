@@ -3,21 +3,22 @@
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
-  "mocha": {
-    "require": "ts-node/register",
-    "reporter": "spec",
-    "recursive": true,
-    "checkLeaks": true,
-    "exit": true,
-    "spec": "test/**/*.spec.ts"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:DariuszWietecha/stock-ticker.git"
   },
   "scripts": {
     "start": "node index.js",
     "test": "lab -v",
-    "test-cov": "lab -c --coverage-exclude src/cliMethods.js"
+    "test-cov": "lab -c",
+    "test-cov-html": "lab -r html -o coverage.html"
   },
   "author": {
     "name": "Dariusz Wietecha"
+  },
+  "license": "ISC",
+  "engines": {
+    "node": ">=v12.0.0"
   },
   "dependencies": {
     "@hapi/wreck": "^17.0.0",
